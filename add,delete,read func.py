@@ -37,6 +37,15 @@ def show(x: int):
                     print(count, list)
 
         description()
+    elif x == 4:
+        def all_row():
+            with open('phone_book.csv', 'r', newline='') as f:
+                reader = csv.reader(f)
+                list2 = [row[0:].replace(';', ' ').replace('\n', '') for row in f]
+                for count, list in enumerate(list2):
+                    print(count, list)
+        all_row()
+
 
 
 # Добавляет в телефонную книгу человека, а также возвращает список из Ф И Т О
@@ -72,18 +81,19 @@ def edit_phone_book():
     else:
         action = input(colored(f'Что вы хотите отредактировать ? {colored("ФИО - 1", "red")} | '
                                f'{colored("Номер - 2", "green")} |'
-                               f' {colored("Описание - 3", "blue")}'))
+                               f' {colored("Описание - 3", "blue")}:    '))
 
         # with open('phone_book.csv', 'r') as f:
         #     reader = csv.reader(f)
         if action in '1':
-            print(show(1))
+            print(show(4))
             action = int(input(f'Введите цифру кого вы хотите изменить ?'))
             new_record = input('Введите новое значение ФИО через пробел: ').split(' ')
             with open('phone_book.csv', 'r', newline='') as read_obj:
                 csv_reader = csv.reader(read_obj)
                 list_of_csv = list(csv_reader)
-                correct_lst = list_of_csv[action][0].replace(';', '').split()
+                correct_lst = list_of_csv[action][0].split(";")
+                print(correct_lst)
                 correct_lst[0], correct_lst[1], correct_lst[2] = new_record[0], new_record[1], new_record[2]
                 print(f'ФИО {colored("изменено", "red")}', correct_lst)
                 with open('phone_book.csv', 'r') as f:
@@ -133,7 +143,7 @@ def edit_phone_book():
                 writer = csv.writer(file, delimiter=';')
                 writer.writerow([correct_lst[0], correct_lst[1], correct_lst[2], correct_lst[3], correct_lst[4]])
 
-
+# edit_phone_book()
 # Из готового файла происходит чтение и затем вывод на печать
 def read_phone_book():
     all_csv = colored('Весь', 'red', attrs=['underline'])
@@ -178,4 +188,15 @@ def add_persons(x: list):
             writer.writerow(x[count][0].split(';'))
 
 
-add_persons(lst)
+# add_persons(lst)
+
+def csv_to_list():
+    with open('phone_book.csv', 'r') as f:
+        line = f.readlines()
+        lst = []
+        for elem in line:
+            lst.append(elem.strip().split(";"))
+    return lst
+
+
+print(csv_to_list())
