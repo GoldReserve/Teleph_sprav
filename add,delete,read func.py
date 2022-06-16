@@ -8,6 +8,7 @@ def show(x: int):
     :param x: Цифра от 1 до 3
     :return: Ничего не возвращает, а просто выводит на печать ФИО, Телефон или Описание в
     зависимости от x
+    +++UP Также может выводить целиком строку-запись при x = 4
     """
     if x == 1:
         def name():
@@ -47,11 +48,13 @@ def show(x: int):
         all_row()
 
 
-
 # Добавляет в телефонную книгу человека, а также возвращает список из Ф И Т О
-# TODO 1. реализовать чтобы принимала от Дениса лист и записывала затем в csv from_list_to_csv и
-# TODO 2.from_csv_to_list Две функии одна от дениса берет лист загоняет в csv и вторая из csv переводит в list и передает Денису для экспорта
 def add_person():
+    """
+    :return: Возвращает список из введеных пользователем данных. А вообще функция запрашивает у пользователя данные
+    затем введенный инпут в формате Фамилия;Имя;Отчество;Телефон;Описание укладывает в csv файл. Если файла нет, то
+    он создается
+    """
     name = input('Введите полное ФИО человека через пробел: ').split(' ')
     number = input('Введите № телефона: ')
     description = input('Введите описание: ')
@@ -61,13 +64,13 @@ def add_person():
     return [name[0], name[1], name[2], number, description]
 
 
-
-
-
-# Удаляет человека из телефонной книги 'phone_book.csv' по номеру
-# TODO 1. Сделать подфункцию(чтение,изменение,удаление,добавление) чтобы не дублировать куски кода в if,elif,elif
-# TODO 2. Добавить всю строку которую редактируешь
+# Удаляет человека из телефонной книги 'phone_book.csv' по номеру.
 def edit_phone_book():
+    """
+    :return: None. Функция предлагает пользователю выбрать что он хочет отредактировать и в зависимости от выбранного
+    варианта принтует редактируемую строку, затем пользователь вводит новые данные и после этого старая запись стирается
+    а новая добавляется в конце списка.
+    """
     action = input(
         f'Вы хотите {colored("удалить - 1", "red")} или {colored("отредактировать данные - 2", "green")}:    ')
     if action in '1':
@@ -111,11 +114,11 @@ def edit_phone_book():
             with open('phone_book.csv', 'r', newline='') as read_obj:
                 csv_reader = csv.reader(read_obj)
                 list_of_csv = list(csv_reader)
-                correct_lst = list_of_csv[action][0].replace(';', '').split()
+                correct_lst = list_of_csv[action][0].replace(';', ' ').split()
                 # print(correct_lst) #ПРОВЕРКА
                 correct_lst[
                     3] = new_record  # OUT OF RANGE если не в том формате записано потому что split не корректно работает
-                print(f'Номер телефон{colored("изменен", "red")}', correct_lst)
+                print(f'Номер телефон {colored("изменен", "red")}', correct_lst)
             with open('phone_book.csv', 'r') as f:
                 line = f.readlines()
             line[action] = ''
@@ -131,7 +134,7 @@ def edit_phone_book():
             with open('phone_book.csv', 'r', newline='') as read_obj:
                 csv_reader = csv.reader(read_obj)
                 list_of_csv = list(csv_reader)
-                correct_lst = list_of_csv[action][0].replace(';', '').split()
+                correct_lst = list_of_csv[action][0].replace(';', ' ').split()
                 correct_lst[4] = new_record
                 print(f'Описание {colored("изменено", "red")}', correct_lst)
             with open('phone_book.csv', 'r') as f:
@@ -143,9 +146,14 @@ def edit_phone_book():
                 writer = csv.writer(file, delimiter=';')
                 writer.writerow([correct_lst[0], correct_lst[1], correct_lst[2], correct_lst[3], correct_lst[4]])
 
-# edit_phone_book()
-# Из готового файла происходит чтение и затем вывод на печать
+
+# Из готового файла происходит чтение и затем вывод на печать. По сути это дубль show, но с меню
 def read_phone_book():
+    """
+    :return:None. По сути это дубль show, но с меню. Мы ведем пользователя через меню и спрашиваем что он хочет
+    посмотреть и затем выводит это в зависимости от выбора. Можно выводить:1. Весь список сразу 2. Отдельную колонку
+    3. Выбранную строку
+    """
     all_csv = colored('Весь', 'red', attrs=['underline'])
     column = colored('Колонку', 'green', attrs=['underline'])
     x = int(input(f'Вы хотите посмотреть {all_csv} тел. справочник или какую-то {column}?'
@@ -156,31 +164,21 @@ def read_phone_book():
                              f'| {colored("Описание - 3", "blue")}:    '))
         if question == 1:
             show(1)
-            pass
         elif question == 2:
             show(2)
-            pass
         elif question == 3:
             show(3)
-            pass
     else:
         file = open("phone_book.csv", "r")
         print(file.read().replace(';', ' '))  # Просто выводит на печать весь file
         # print(f.readlines()) # Возвращает список с разделителем ;
 
 
-# add_person()
-# read_phone_book()
-# edit_phone_book()
-
-lst = [["Иванов;Иван;Иванович;89163678796;Коллега"], ["Петров;Петр;Петрович;89173217896;Сосед"],
-       ["Евгеньев;Евгений;Евгеньевич;89263645789;Сват"], ["Александров;Александр;Александрович;89143214586;Брат"],
-       ["Сергеев;Сергей;Сергеевич;89636541896;Папа"], ["Антонова;Антонина;Антоновна;89356789451;Мама"]]
-
+# Добавляет list на входе в csv файл
 def add_persons(x: list):
     """
     :param x: Денис передает list из листов с людьми
-    :return: ---
+    :return: None. Функция через цикл вносит данные из x в csv с которым в последующем будут работать другие функции
     """
     with open('phone_book.csv', 'a+', newline='') as file:
         writer = csv.writer(file, delimiter=';')
@@ -188,15 +186,30 @@ def add_persons(x: list):
             writer.writerow(x[count][0].split(';'))
 
 
-# add_persons(lst)
-
+# Перегоняет из csv в list и готовит lst для последующего экспорта
 def csv_to_list():
+    """
+    :return: lst:list для последующего экспорта. Функция читает csv файл('phone_book.csv') и через split добавляет все
+    строки в lst которы и возращается.
+    """
     with open('phone_book.csv', 'r') as f:
         line = f.readlines()
         lst = []
         for elem in line:
-            lst.append(elem.strip().split(";"))
+            lst.append(elem.strip().split(";")) #TODO В идеале на list comperhension переделать
     return lst
 
 
+# Тестовый лист
+lst = [["Иванов;Иван;Иванович;89163678796;Коллега"], ["Петров;Петр;Петрович;89173217896;Сосед"],
+       ["Евгеньев;Евгений;Евгеньевич;89263645789;Сват"], ["Александров;Александр;Александрович;89143214586;Брат"],
+       ["Сергеев;Сергей;Сергеевич;89636541896;Папа"], ["Антонова;Антонина;Антоновна;89356789451;Мама"]]
+
+# add_person()
+# add_persons(lst)
+# edit_phone_book()
+# read_phone_book()
+
 print(csv_to_list())
+x = csv_to_list()
+print(x)
