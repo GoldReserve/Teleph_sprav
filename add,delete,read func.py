@@ -1,5 +1,6 @@
 import csv
-from termcolor import colored, cprint
+
+from termcolor import colored
 
 
 # Функция вывода Фио, телефонов, описаний из csv файла
@@ -39,13 +40,26 @@ def show(x: int):
 
         description()
     elif x == 4:
+        #сделать в show ровное отображение (как Антон присылал)
+        #четные строки белым нечетные серым
         def all_row():
             with open('phone_book.csv', 'r', newline='') as f:
                 reader = csv.reader(f)
-                list2 = [row[0:].replace(';', ' ').replace('\n', '') for row in f]
-                for count, list in enumerate(list2):
-                    print(count, list)
+                list2 = [row.split(";")[0:5] for row in f]
+                for lst in list2:
+                    lst[-1] = lst[-1].strip()
+                for count, item in enumerate(list2):
+                    if count % 2 != 0:
+                        print(colored(f"||  {count} {item[0][:15]:15} | {item[1]:15} | "
+                                      f"{item[2]:15} | {item[3]:15} | {(item[4]):15} ||", 'white'))
+                    else:
+                        print(f"||  {count} {item[0][:15]:15} | {item[1]:15} | {item[2]:15} | "
+                              f"{item[3]:15} | {item[4]:15} ||")
         all_row()
+
+
+
+show(4)
 
 
 # Добавляет в телефонную книгу человека, а также возвращает список из Ф И Т О
@@ -201,17 +215,19 @@ def csv_to_list():
 
 
 # Тестовый лист
-lst = [["Иванов;Иван;Иванович;89163678796;Коллега"], ["Петров;Петр;Петрович;89173217896;Сосед"],
-       ["Евгеньев;Евгений;Евгеньевич;89263645789;Сват"], ["Александров;Александр;Александрович;89143214586;Брат"],
-       ["Сергеев;Сергей;Сергеевич;89636541896;Папа"], ["Антонова;Антонина;Антоновна;89356789451;Мама"]]
+# lst = [["Иванов;Иван;Иванович;89163678796;Коллега"], ["Петров;Петр;Петрович;89173217896;Сосед"],
+#        ["Евгеньев;Евгений;Евгеньевич;89263645789;Сват"], ["Александров;Александр;Александрович;89143214586;Брат"],
+#        ["Сергеев;Сергей;Сергеевич;89636541896;Папа"], ["Антонова;Антонина;Антоновна;89356789451;Мама"]]
 
 # add_person()
 # add_persons(lst)
 # edit_phone_book()
 # read_phone_book()
 
-print(csv_to_list())
-x = csv_to_list()
-print(x)
+# print(csv_to_list())
+# x = csv_to_list()
+# print(x)
+
+
 
 
